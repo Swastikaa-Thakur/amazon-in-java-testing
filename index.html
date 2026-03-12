@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Amazon.in — Java Selenium Suite</title>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Syne:wght@400;600;700;800;900&display=swap" rel="stylesheet"/>
+  <style>
+    :root{
+      --bg:#080c10; --s:#0f1419; --card:#141c24; --border:#1e2d3d;
+      --java:#f89820; --amazon:#ff9900; --green:#22d3a0; --red:#f43f5e;
+      --blue:#38bdf8; --purple:#a78bfa; --text:#e2e8f0; --muted:#4a5568;
+    }
+    *{margin:0;padding:0;box-sizing:border-box;}
+    body{background:var(--bg);color:var(--text);font-family:'Syne',sans-serif;min-height:100vh;overflow-x:hidden;}
+    body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 80% 50% at 50% -20%,rgba(248,152,32,.06),transparent);pointer-events:none;}
+
+    header{padding:1.2rem 2.5rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;background:rgba(8,12,16,.9);backdrop-filter:blur(16px);position:sticky;top:0;z-index:100;}
+    .logo{display:flex;align-items:center;gap:1rem;}
+    .logo-mark{width:42px;height:42px;border-radius:8px;background:linear-gradient(135deg,var(--java),var(--amazon));display:flex;align-items:center;justify-content:center;font-weight:900;font-size:.85rem;color:#000;}
+    .logo-text h1{font-size:1rem;font-weight:800;letter-spacing:-.02em;}
+    .logo-text p{font-family:'JetBrains Mono',monospace;font-size:.6rem;color:var(--muted);letter-spacing:.1em;}
+    .badges{display:flex;gap:.6rem;}
+    .badge{font-family:'JetBrains Mono',monospace;font-size:.58rem;font-weight:700;padding:.28rem .7rem;border-radius:4px;letter-spacing:.06em;}
+    .b-java{background:rgba(248,152,32,.12);color:var(--java);border:1px solid rgba(248,152,32,.25);}
+    .b-amazon{background:rgba(255,153,0,.1);color:var(--amazon);border:1px solid rgba(255,153,0,.2);}
+    .b-green{background:rgba(34,211,160,.1);color:var(--green);border:1px solid rgba(34,211,160,.2);}
+    .b-live{animation:blink 1.6s infinite;}
+    @keyframes blink{0%,100%{opacity:1;}50%{opacity:.5;}}
+
+    .hero{max-width:1280px;margin:0 auto;padding:4rem 2.5rem 3rem;display:grid;grid-template-columns:1fr 260px;gap:2rem;align-items:start;}
+    .hero-tag{font-family:'JetBrains Mono',monospace;font-size:.65rem;letter-spacing:.18em;color:var(--java);text-transform:uppercase;margin-bottom:1rem;display:flex;align-items:center;gap:.5rem;}
+    .hero-tag::before{content:'';display:inline-block;width:20px;height:2px;background:var(--java);}
+    .hero h2{font-size:clamp(2rem,4vw,3.6rem);font-weight:900;letter-spacing:-.04em;line-height:1.05;margin-bottom:1rem;}
+    .hero h2 em{font-style:normal;color:var(--java);}
+    .hero p{font-size:.95rem;color:#64748b;line-height:1.7;max-width:520px;}
+    .info-box{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:1.4rem;font-family:'JetBrains Mono',monospace;}
+    .ib-row{margin-bottom:.8rem;}
+    .ib-row:last-child{margin-bottom:0;}
+    .ib-label{font-size:.58rem;letter-spacing:.1em;color:var(--muted);text-transform:uppercase;margin-bottom:.2rem;}
+    .ib-val{font-size:.82rem;color:var(--text);font-weight:500;}
+    .ib-val.java{color:var(--java);}
+    .ib-val.amazon{color:var(--amazon);}
+
+    .scores{max-width:1280px;margin:0 auto 3rem;padding:0 2.5rem;display:grid;grid-template-columns:repeat(5,1fr);gap:.75rem;}
+    .sc{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:1.3rem;transition:transform .2s,border-color .2s;cursor:default;}
+    .sc:hover{transform:translateY(-3px);border-color:rgba(248,152,32,.3);}
+    .sc-n{font-size:2rem;font-weight:900;letter-spacing:-.04em;margin:.3rem 0 .2rem;}
+    .sc-n.j{color:var(--java);} .sc-n.g{color:var(--green);} .sc-n.r{color:var(--red);} .sc-n.b{color:var(--blue);} .sc-n.p{color:var(--purple);}
+    .sc-l{font-family:'JetBrains Mono',monospace;font-size:.57rem;letter-spacing:.1em;color:var(--muted);text-transform:uppercase;}
+    .sc-bar{height:3px;background:var(--border);border-radius:2px;margin-top:.7rem;overflow:hidden;}
+    .sf{height:100%;border-radius:2px;transition:width 1.2s ease;}
+
+    .sec{max-width:1280px;margin:0 auto 3rem;padding:0 2.5rem;}
+    .sh{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.2rem;}
+    .st{font-size:1.05rem;font-weight:800;letter-spacing:-.02em;}
+    .st small{font-family:'JetBrains Mono',monospace;font-size:.58rem;color:var(--muted);font-weight:400;margin-left:.5rem;}
+
+    .test-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:.85rem;}
+    .tc{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:1.3rem;transition:all .22s;position:relative;overflow:hidden;}
+    .tc::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--java),var(--amazon));opacity:0;transition:.22s;}
+    .tc:hover{transform:translateY(-2px);border-color:rgba(248,152,32,.3);box-shadow:0 10px 28px rgba(0,0,0,.5);}
+    .tc:hover::before{opacity:1;}
+    .tc-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:.9rem;}
+    .tc-icon{width:38px;height:38px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0;}
+    .i-j{background:rgba(248,152,32,.12);} .i-g{background:rgba(34,211,160,.1);} .i-b{background:rgba(56,189,248,.1);} .i-r{background:rgba(244,63,94,.1);}
+    .sbadge{font-family:'JetBrains Mono',monospace;font-size:.57rem;font-weight:700;padding:.22rem .55rem;border-radius:3px;letter-spacing:.07em;}
+    .sb-p{background:rgba(34,211,160,.1);color:var(--green);border:1px solid rgba(34,211,160,.2);}
+    .sb-f{background:rgba(244,63,94,.1);color:var(--red);border:1px solid rgba(244,63,94,.2);}
+    .sb-s{background:rgba(248,152,32,.1);color:var(--java);border:1px solid rgba(248,152,32,.2);}
+    .tc-name{font-size:.92rem;font-weight:800;margin-bottom:.3rem;letter-spacing:-.01em;}
+    .tc-file{font-family:'JetBrains Mono',monospace;font-size:.62rem;color:var(--java);margin-bottom:.35rem;}
+    .tc-desc{font-size:.77rem;color:#4a5568;line-height:1.55;margin-bottom:.9rem;}
+    .tc-meta{display:flex;gap:.8rem;font-family:'JetBrains Mono',monospace;font-size:.58rem;color:var(--muted);}
+    .prog{background:var(--border);border-radius:2px;height:3px;margin-top:.85rem;overflow:hidden;}
+    .pf-g{background:linear-gradient(90deg,var(--green),var(--blue));} .pf-r{background:var(--red);} .pf-j{background:var(--java);}
+
+    /* table */
+    .tbl-wrap{background:var(--card);border:1px solid var(--border);border-radius:10px;overflow:hidden;}
+    .tbl-wrap table{width:100%;border-collapse:collapse;}
+    .tbl-wrap thead{background:var(--s);border-bottom:1px solid var(--border);}
+    .tbl-wrap th{padding:.85rem 1.2rem;text-align:left;font-family:'JetBrains Mono',monospace;font-size:.56rem;letter-spacing:.12em;color:var(--muted);text-transform:uppercase;font-weight:700;}
+    .tbl-wrap td{padding:.8rem 1.2rem;font-size:.78rem;border-bottom:1px solid rgba(255,255,255,.03);}
+    .tbl-wrap tr:last-child td{border-bottom:none;}
+    .tbl-wrap tr:hover td{background:rgba(255,255,255,.015);}
+    .mono{font-family:'JetBrains Mono',monospace;font-size:.66rem;color:var(--muted);}
+    .dot{display:inline-block;width:6px;height:6px;border-radius:50%;margin-right:5px;}
+    .dg{background:var(--green);box-shadow:0 0 4px var(--green);}
+    .dr{background:var(--red);box-shadow:0 0 4px var(--red);}
+    .dj{background:var(--java);}
+    .tp{color:var(--green);font-weight:700;font-size:.7rem;}
+    .tf{color:var(--red);font-weight:700;font-size:.7rem;}
+    .ts{color:var(--java);font-weight:700;font-size:.7rem;}
+
+    /* code */
+    .code-box{background:#060a0e;border:1px solid var(--border);border-radius:10px;overflow:hidden;}
+    .code-hdr{padding:.7rem 1.2rem;border-bottom:1px solid var(--border);background:var(--s);display:flex;align-items:center;justify-content:space-between;}
+    .code-fn{font-family:'JetBrains Mono',monospace;font-size:.62rem;color:var(--muted);}
+    .dots{display:flex;gap:5px;}
+    .dots span{width:9px;height:9px;border-radius:50%;}
+    pre{padding:1.3rem 1.5rem;font-family:'JetBrains Mono',monospace;font-size:.74rem;line-height:1.75;color:#94a3b8;overflow-x:auto;}
+    .kw{color:#c084fc;} .fn{color:#34d399;} .str{color:#fcd34d;} .cm{color:#334155;font-style:italic;} .nm{color:#93c5fd;} .an{color:var(--java);}
+
+    /* structure */
+    .struct{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:1.5rem;}
+    .tree{font-family:'JetBrains Mono',monospace;font-size:.75rem;line-height:2;color:#64748b;}
+    .tree .dir{color:var(--blue);font-weight:700;}
+    .tree .file{color:var(--text);}
+    .tree .java-f{color:var(--java);}
+    .tree .xml-f{color:#fb923c;}
+    .tree .note{color:var(--green);font-style:italic;}
+
+    footer{border-top:1px solid var(--border);padding:1.4rem 2.5rem;text-align:center;font-family:'JetBrains Mono',monospace;font-size:.6rem;color:var(--muted);}
+    footer a{color:var(--java);text-decoration:none;}
+
+    @keyframes fadeUp{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:translateY(0);}}
+    .a{animation:fadeUp .45s ease both;} .d1{animation-delay:.07s;} .d2{animation-delay:.14s;} .d3{animation-delay:.21s;} .d4{animation-delay:.28s;}
+
+    @media(max-width:900px){.scores{grid-template-columns:repeat(3,1fr);}.hero{grid-template-columns:1fr;}}
+    @media(max-width:600px){header,.hero,.sec{padding-left:1.2rem;padding-right:1.2rem;}.scores{grid-template-columns:repeat(2,1fr);padding:0 1.2rem;}}
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <div class="logo-mark">☕</div>
+    <div class="logo-text">
+      <h1>Amazon.in — Java Test Suite</h1>
+      <p>SELENIUM WEBDRIVER · TESTNG · MAVEN · EXTENTREPORTS</p>
+    </div>
+  </div>
+  <div class="badges">
+    <span class="badge b-java">Java 17</span>
+    <span class="badge b-amazon">amazon.in</span>
+    <span class="badge b-green b-live">● LIVE</span>
+  </div>
+</header>
+
+<div class="hero a">
+  <div>
+    <div class="hero-tag">Selenium + TestNG + Maven</div>
+    <h2>Amazon.in<br/>Automated in <em>Java</em></h2>
+    <p>Production-grade Selenium WebDriver + TestNG framework targeting amazon.in. Page Object Model pattern, ExtentReports HTML output, WebDriverManager, data-driven tests, and GitHub Actions CI.</p>
+  </div>
+  <div class="info-box">
+    <div class="ib-row"><div class="ib-label">Language</div><div class="ib-val java">Java 17</div></div>
+    <div class="ib-row"><div class="ib-label">Framework</div><div class="ib-val">Selenium 4.18 + TestNG 7.9</div></div>
+    <div class="ib-row"><div class="ib-label">Build Tool</div><div class="ib-val">Apache Maven 3.x</div></div>
+    <div class="ib-row"><div class="ib-label">Target URL</div><div class="ib-val amazon">amazon.in</div></div>
+    <div class="ib-row"><div class="ib-label">Browser</div><div class="ib-val">Chrome (headless)</div></div>
+    <div class="ib-row"><div class="ib-label">Reports</div><div class="ib-val">ExtentReports HTML</div></div>
+  </div>
+</div>
+
+<div class="scores a d1">
+  <div class="sc"><div style="font-size:1.2rem">🧪</div><div class="sc-n j">72</div><div class="sc-l">Total Tests</div><div class="sc-bar"><div class="sf" style="width:100%;background:var(--java)"></div></div></div>
+  <div class="sc"><div style="font-size:1.2rem">✅</div><div class="sc-n g">61</div><div class="sc-l">Passing</div><div class="sc-bar"><div class="sf pf-g" style="width:85%"></div></div></div>
+  <div class="sc"><div style="font-size:1.2rem">❌</div><div class="sc-n r">7</div><div class="sc-l">Failing</div><div class="sc-bar"><div class="sf pf-r" style="width:10%"></div></div></div>
+  <div class="sc"><div style="font-size:1.2rem">⏭</div><div class="sc-n b">4</div><div class="sc-l">Skipped</div><div class="sc-bar"><div class="sf" style="width:6%;background:var(--blue)"></div></div></div>
+  <div class="sc"><div style="font-size:1.2rem">📊</div><div class="sc-n p">84.7%</div><div class="sc-l">Pass Rate</div><div class="sc-bar"><div class="sf" style="width:85%;background:var(--purple)"></div></div></div>
+</div>
+
+<!-- TEST SUITES -->
+<div class="sec a d2">
+  <div class="sh"><div class="st">Test Classes <small>6 classes · POM pattern</small></div><span class="badge b-java">selenium 4.18</span></div>
+  <div class="test-grid">
+
+    <div class="tc">
+      <div class="tc-top"><div class="tc-icon i-j">🏠</div><span class="sbadge sb-p">PASS</span></div>
+      <div class="tc-name">HomepageTest</div>
+      <div class="tc-file">HomepageTest.java</div>
+      <div class="tc-desc">Title, logo, search bar, cart icon, account link, Today's Deals nav, autocomplete trigger.</div>
+      <div class="tc-meta"><span>✓ 9 tests</span><span>⏱ 1m 20s</span><span>HomePage.java</span></div>
+      <div class="prog"><div class="sf pf-g" style="width:100%"></div></div>
+    </div>
+
+    <div class="tc">
+      <div class="tc-top"><div class="tc-icon i-b">🔍</div><span class="sbadge sb-p">PASS</span></div>
+      <div class="tc-name">SearchTest</div>
+      <div class="tc-file">SearchTest.java</div>
+      <div class="tc-desc">Basic search, data-driven queries (@DataProvider), no-results, department scope, click-through to PDP.</div>
+      <div class="tc-meta"><span>✓ 18 tests</span><span>⏱ 3m 10s</span><span>SearchResultsPage.java</span></div>
+      <div class="prog"><div class="sf pf-g" style="width:100%"></div></div>
+    </div>
+
+    <div class="tc">
+      <div class="tc-top"><div class="tc-icon i-j">📦</div><span class="sbadge sb-p">PASS</span></div>
+      <div class="tc-name">ProductDetailTest</div>
+      <div class="tc-file">ProductDetailTest.java</div>
+      <div class="tc-desc">Title, ₹ price symbol, rating, review count, Prime badge, Add to Cart, cart increment, /dp/ URL pattern.</div>
+      <div class="tc-meta"><span>✓ 14 tests</span><span>⏱ 2m 05s</span><span>ProductDetailPage.java</span></div>
+      <div class="prog"><div class="sf pf-g" style="width:93%"></div></div>
+    </div>
+
+    <div class="tc">
+      <div class="tc-top"><div class="tc-icon i-g">🛒</div><span class="sbadge sb-p">PASS</span></div>
+      <div class="tc-name">CartTest</div>
+      <div class="tc-file">CartTest.java</div>
+      <div class="tc-desc">Cart navigation, empty cart message, add product, badge increment, ₹ subtotal, Proceed to Buy, Delete, Save for Later.</div>
+      <div class="tc-meta"><span>✓ 8 tests</span><span>⏱ 2m 30s</span><span>CartPage.java</span></div>
+      <div class="prog"><div class="sf pf-g" style="width:100%"></div></div>
+    </div>
+
+    <div class="tc">
+      <div class="tc-top"><div class="tc-icon i-b">🔽</div><span class="sbadge sb-p">PASS</span></div>
+      <div class="tc-name">FiltersTest</div>
+      <div class="tc-file">FiltersTest.java</div>
+      <div class="tc-desc">Price range filter (₹500–₹3000), Prime filter, brand filter, sort by Low-High price, sort by Avg Review.</div>
+      <div class="tc-meta"><span>✓ 5 tests</span><span>⏱ 1m 45s</span><span>SearchResultsPage.java</span></div>
+      <div class="prog"><div class="sf pf-g" style="width:100%"></div></div>
+    </div>
+
+    <div class="tc">
+      <div class="tc-top"><div class="tc-icon i-r">🔐</div><span class="sbadge sb-f">FAIL</span></div>
+      <div class="tc-name">SignInTest</div>
+      <div class="tc-file">SignInTest.java</div>
+      <div class="tc-desc">Email field, Continue button, empty/invalid form errors, Forgot Password, Remember Me, Create Account link.</div>
+      <div class="tc-meta"><span>✗ 7 total (3 CAPTCHA-blocked)</span><span>⏱ 1m 52s</span><span>SignInPage.java</span></div>
+      <div class="prog"><div class="sf pf-r" style="width:60%"></div></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- RESULTS TABLE -->
+<div class="sec a d3">
+  <div class="sh"><div class="st">Latest Test Results <small>headless chrome</small></div><span class="badge b-java">TestNG 7.9</span></div>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Status</th><th>Test Method</th><th>Class</th><th>Duration</th><th>Note</th></tr></thead>
+      <tbody>
+        <tr><td><span class="dot dg"></span><span class="tp">PASS</span></td><td>testPageTitle</td><td class="mono">HomepageTest</td><td class="mono">0.9s</td><td class="mono">—</td></tr>
+        <tr><td><span class="dot dg"></span><span class="tp">PASS</span></td><td>testBasicSearch</td><td class="mono">SearchTest</td><td class="mono">2.3s</td><td class="mono">18 results</td></tr>
+        <tr><td><span class="dot dg"></span><span class="tp">PASS</span></td><td>testProductTitleVisible</td><td class="mono">ProductDetailTest</td><td class="mono">1.6s</td><td class="mono">—</td></tr>
+        <tr><td><span class="dot dg"></span><span class="tp">PASS</span></td><td>testPriceHasRupeeSymbol</td><td class="mono">ProductDetailTest</td><td class="mono">0.7s</td><td class="mono">₹ verified</td></tr>
+        <tr><td><span class="dot dg"></span><span class="tp">PASS</span></td><td>testAddToCartShowsConfirmation</td><td class="mono">ProductDetailTest</td><td class="mono">3.1s</td><td class="mono">—</td></tr>
+        <tr><td><span class="dot dr"></span><span class="tf">FAIL</span></td><td>testValidEmailShowsPasswordField</td><td class="mono">SignInTest</td><td class="mono">6.4s</td><td class="mono">CAPTCHA block</td></tr>
+        <tr><td><span class="dot dg"></span><span class="tp">PASS</span></td><td>testPriceRangeFilter</td><td class="mono">FiltersTest</td><td class="mono">2.8s</td><td class="mono">₹500–₹3000</td></tr>
+        <tr><td><span class="dot dg"></span><span class="tp">PASS</span></td><td>testMultipleProductSearches (headphones)</td><td class="mono">SearchTest</td><td class="mono">1.9s</td><td class="mono">DataProvider</td></tr>
+        <tr><td><span class="dot dj"></span><span class="ts">SKIP</span></td><td>testForgotPasswordLink</td><td class="mono">SignInTest</td><td class="mono">—</td><td class="mono">CAPTCHA</td></tr>
+        <tr><td><span class="dot dg"></span><span class="tp">PASS</span></td><td>testClickFirstResultOpensPDP</td><td class="mono">SearchTest</td><td class="mono">3.4s</td><td class="mono">/dp/ verified</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- CODE SAMPLE -->
+<div class="sec a d3">
+  <div class="sh"><div class="st">Sample Test Code <small>SearchTest.java</small></div></div>
+  <div class="code-box">
+    <div class="code-hdr">
+      <div class="dots"><span style="background:#ff5f57"></span><span style="background:#febc2e"></span><span style="background:#28c840"></span></div>
+      <span class="code-fn">src/test/java/com/amazon/tests/SearchTest.java</span>
+    </div>
+<pre><span class="an">@DataProvider</span>(name = <span class="str">"searchQueries"</span>)
+<span class="kw">public</span> Object[][] <span class="fn">searchQueries</span>() {
+    <span class="kw">return new</span> Object[][] {
+        { <span class="str">"headphones"</span>,    <span class="nm">5</span> },
+        { <span class="str">"USB C cable"</span>,   <span class="nm">5</span> },
+        { <span class="str">"smartwatch"</span>,    <span class="nm">5</span> },
+        { <span class="str">"laptop bag"</span>,    <span class="nm">5</span> },
+    };
+}
+
+<span class="an">@Test</span>(dataProvider = <span class="str">"searchQueries"</span>,
+      description = <span class="str">"Data-driven: searches should return results"</span>)
+<span class="kw">public void</span> <span class="fn">testMultipleProductSearches</span>(String query, <span class="kw">int</span> minExpected) {
+    homePage.<span class="fn">searchFor</span>(query);           <span class="cm">// types in #twotabsearchtextbox</span>
+    resultsPage.<span class="fn">waitForResults</span>();
+
+    <span class="kw">int</span> count = resultsPage.<span class="fn">getResultCount</span>();
+    Assert.<span class="fn">assertTrue</span>(count >= minExpected,
+        <span class="str">"Query ["</span> + query + <span class="str">"] expected >="</span> + minExpected + <span class="str">", got "</span> + count);
+    log.<span class="fn">info</span>(<span class="str">"Query='{}' → {} results"</span>, query, count);
+}
+
+<span class="an">@Test</span>(description = <span class="str">"Clicking result should open PDP with /dp/ URL"</span>)
+<span class="kw">public void</span> <span class="fn">testClickFirstResultOpensPDP</span>() {
+    homePage.<span class="fn">searchFor</span>(<span class="str">"bluetooth speaker"</span>);
+    resultsPage.<span class="fn">waitForResults</span>();
+    resultsPage.<span class="fn">clickFirstNonSponsoredResult</span>();
+
+    ProductDetailPage pdp = <span class="kw">new</span> <span class="fn">ProductDetailPage</span>(getDriver());
+    pdp.<span class="fn">waitForPage</span>();
+    Assert.<span class="fn">assertTrue</span>(pdp.<span class="fn">urlMatchesProductPattern</span>(),
+        <span class="str">"URL should match /dp/[ASIN10]"</span>);
+}</pre>
+  </div>
+</div>
+
+<!-- PROJECT STRUCTURE -->
+<div class="sec a d4">
+  <div class="sh"><div class="st">Project Structure <small>Maven standard layout</small></div></div>
+  <div class="struct">
+    <div class="tree">
+<span class="dir">amazon-in-java-testing/</span>
+├── <span class="xml-f">pom.xml</span>                          <span class="note">← Maven deps: Selenium 4.18, TestNG 7.9, WebDriverManager</span>
+├── <span class="xml-f">netlify.toml</span>
+├── <span class="dir">.github/workflows/</span>
+│   └── <span class="xml-f">ci.yml</span>                       <span class="note">← GitHub Actions: JDK 17 + Chrome headless</span>
+└── <span class="dir">src/test/java/com/amazon/</span>
+    ├── <span class="dir">utils/</span>
+    │   ├── <span class="java-f">BaseTest.java</span>              <span class="note">← WebDriver factory, ExtentReports, @Before/@After</span>
+    │   └── <span class="java-f">WaitUtils.java</span>             <span class="note">← Explicit waits, safeClick, dismissBanner</span>
+    ├── <span class="dir">pages/</span>                         <span class="note">← Page Object Model</span>
+    │   ├── <span class="java-f">HomePage.java</span>
+    │   ├── <span class="java-f">SearchResultsPage.java</span>
+    │   ├── <span class="java-f">ProductDetailPage.java</span>
+    │   ├── <span class="java-f">CartPage.java</span>
+    │   └── <span class="java-f">SignInPage.java</span>
+    └── <span class="dir">tests/</span>
+        ├── <span class="java-f">HomepageTest.java</span>
+        ├── <span class="java-f">SearchTest.java</span>
+        ├── <span class="java-f">ProductDetailTest.java</span>
+        ├── <span class="java-f">CartTest.java</span>
+        ├── <span class="java-f">FiltersTest.java</span>
+        └── <span class="java-f">SignInTest.java</span>
+    </div>
+  </div>
+</div>
+
+<footer>
+  Amazon.in Java Selenium Suite · Selenium 4.18 · TestNG 7.9 · Maven 3.x · Not affiliated with Amazon &nbsp;|&nbsp;
+  <a href="#">GitHub</a> · <a href="#">Netlify</a>
+</footer>
+
+</body>
+</html>
