@@ -12,7 +12,7 @@
 | WebDriverManager | 5.7.0 | Auto browser driver setup |
 | ExtentReports | 5.1.1 | HTML test reports |
 | Maven | 3.x | Build & dependency management |
-| Log4j2 | 2.23.0 | Logging |
+
 
 ## Quick Start
 
