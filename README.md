@@ -50,9 +50,6 @@ mvn test -Dtest=SearchTest -Dheadless=true
 
 After test run, open `reports/AmazonIn_TestReport_<timestamp>.html` in your browser.
 
-## Deploy to Netlify
-
-Drag-drop the project folder to Netlify — publish dir is `.` (the root with `index.html`).
 
 ## Notes
 
