@@ -14,7 +14,7 @@ public class CartPage {
 
     private final WebDriver driver;
 
-    // ── LOCATORS ───────────────────────────────────────────────────
+    // ── LOCATORS ──────────────────────────────────────────────────
     @FindBy(css = ".sc-product-title, [data-name='Active Items'] .a-truncate-full")
     private List<WebElement> cartItemTitles;
 
